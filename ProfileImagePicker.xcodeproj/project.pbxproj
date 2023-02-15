@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47075EC1299D1D1400BDCB7C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 47075EC0299D1D1400BDCB7C /* README.md */; };
 		47A28DEF299D1A27009F8A21 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DEE299D1A27009F8A21 /* AppDelegate.swift */; };
 		47A28DF1299D1A27009F8A21 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DF0299D1A27009F8A21 /* SceneDelegate.swift */; };
 		47A28DF3299D1A27009F8A21 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DF2299D1A27009F8A21 /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		47075EBE299D1A5800BDCB7C /* ProfileImagePicker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProfileImagePicker.entitlements; sourceTree = "<group>"; };
+		47075EC0299D1D1400BDCB7C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		47A28DEB299D1A27009F8A21 /* ProfileImagePicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProfileImagePicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A28DEE299D1A27009F8A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47A28DF0299D1A27009F8A21 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -38,9 +40,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		47075EBF299D1CBB00BDCB7C /* Picker */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Picker;
+			sourceTree = "<group>";
+		};
 		47A28DE2299D1A27009F8A21 = {
 			isa = PBXGroup;
 			children = (
+				47075EC0299D1D1400BDCB7C /* README.md */,
 				47A28DED299D1A27009F8A21 /* ProfileImagePicker */,
 				47A28DEC299D1A27009F8A21 /* Products */,
 			);
@@ -62,9 +72,10 @@
 				47A28DF0299D1A27009F8A21 /* SceneDelegate.swift */,
 				47A28DF2299D1A27009F8A21 /* ViewController.swift */,
 				47A28DF4299D1A27009F8A21 /* Main.storyboard */,
-				47A28DF7299D1A28009F8A21 /* Assets.xcassets */,
 				47A28DF9299D1A28009F8A21 /* LaunchScreen.storyboard */,
+				47A28DF7299D1A28009F8A21 /* Assets.xcassets */,
 				47A28DFC299D1A28009F8A21 /* Info.plist */,
+				47075EBF299D1CBB00BDCB7C /* Picker */,
 			);
 			path = ProfileImagePicker;
 			sourceTree = "<group>";
@@ -129,6 +140,7 @@
 			files = (
 				47A28DFB299D1A28009F8A21 /* LaunchScreen.storyboard in Resources */,
 				47A28DF8299D1A28009F8A21 /* Assets.xcassets in Resources */,
+				47075EC1299D1D1400BDCB7C /* README.md in Resources */,
 				47A28DF6299D1A27009F8A21 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
