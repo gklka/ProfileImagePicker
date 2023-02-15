@@ -32,6 +32,9 @@
                             <constraint firstItem="jrA-Km-zk3" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="PWf-Xo-4m2"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="profileImageView" destination="jrA-Km-zk3" id="ET1-K3-yIZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

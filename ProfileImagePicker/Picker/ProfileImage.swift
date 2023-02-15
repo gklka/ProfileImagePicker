@@ -17,10 +17,10 @@ struct ProfileImage {
         
         var type: BackgroundType = .color
         var image: UIImage?
-        var firstColor: UIColor = .red
+        var firstColor: UIColor = .gray
         var secondColor: UIColor?
     }
     
-    var background: Background = Background(type: .color, firstColor: .red)
+    var background: Background = Background(type: .color)
     var text: String?
 }

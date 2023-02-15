@@ -20,7 +20,12 @@ class ProfileImageView: UIView {
     // MARK: - Properties
 
     // Content properties
-    public var profileImage: ProfileImage = ProfileImage(background: ProfileImage.Background(type: .gradient, firstColor: .white, secondColor: .yellow), text: "GK")
+    public var profileImage: ProfileImage = ProfileImage() {
+        didSet {
+            self.reset()
+            self.setup()
+        }
+    }
     public var shape: Shape = .circle
     public var font: UIFont = UIFont.systemFont(ofSize: UIFont.systemFontSize)
     public var editable: Bool = true
@@ -88,6 +93,22 @@ class ProfileImageView: UIView {
         self.accessibilityLabel = "Profile image"
     }
     
+    func reset() {
+        // Remove background color
+        self.backgroundColor = .clear
+
+        // Remove previous gradients
+        self.layer.sublayers?.filter({ $0 is CAGradientLayer }).forEach({ $0.removeFromSuperlayer() })
+        
+        // Remove background image
+        self.backgroundImageView?.removeFromSuperview()
+        self.backgroundImageView = nil
+
+        // Remove text
+        self.textLabel?.removeFromSuperview()
+        self.textLabel = nil
+    }
+    
     // MARK: - GUI actions
     
     @objc func editButtonTapped(_ sender: UIButton?) {
@@ -101,9 +122,6 @@ class ProfileImageView: UIView {
             print("Wrong function call: secondColor is empty")
             return
         }
-
-        // Remove previous gradients
-        self.layer.sublayers?.filter({ $0 is CAGradientLayer }).forEach({ $0.removeFromSuperlayer() })
         
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [self.profileImage.background.firstColor.cgColor, secondColor.cgColor]

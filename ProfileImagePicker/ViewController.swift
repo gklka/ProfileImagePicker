@@ -8,12 +8,14 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var profileImageView: ProfileImageView!
+    
+    // The current profile image
+    var profileImage = ProfileImage(background: ProfileImage.Background(type: .gradient, firstColor: .blue, secondColor: .purple), text: "GK")
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        self.profileImageView.profileImage = self.profileImage
     }
-
-
 }
 
