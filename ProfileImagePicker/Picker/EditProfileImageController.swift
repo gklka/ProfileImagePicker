@@ -48,7 +48,7 @@ class EditProfileImageController: UIViewController {
         // Close button
         self.closeButton = UIButton(frame: .zero)
         self.closeButton.setImage(UIImage(systemName: "xmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(scale: .large)), for: .normal)
-        self.closeButton.tintColor = UIColor.lightText
+        self.closeButton.tintColor = UIColor.label
         self.closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         
         // Profile image
