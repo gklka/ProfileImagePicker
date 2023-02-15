@@ -25,7 +25,7 @@
                                 </constraints>
                             </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="7mv-VW-Nlk">
-                                <rect key="frame" x="66.666666666666686" y="540" width="260" height="32"/>
+                                <rect key="frame" x="66.666666666666686" y="578.66666666666663" width="260" height="32"/>
                                 <segments>
                                     <segment title="Square"/>
                                     <segment title="Circle"/>
@@ -36,7 +36,7 @@
                                 </connections>
                             </segmentedControl>
                             <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="8" minValue="0.0" maxValue="32" translatesAutoresizingMaskIntoConstraints="NO" id="a2Q-BO-5Lr">
-                                <rect key="frame" x="67.666666666666686" y="579" width="258" height="31"/>
+                                <rect key="frame" x="67.666666666666686" y="617.66666666666663" width="258" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="254" id="bis-Bw-rZl"/>
                                 </constraints>
@@ -44,16 +44,25 @@
                                     <action selector="radiusChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="Vr4-we-gDw"/>
                                 </connections>
                             </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SETTINGS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B5k-pd-FsC">
+                                <rect key="frame" x="66.666666666666671" y="554.66666666666663" width="64.000000000000014" height="16"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="7mv-VW-Nlk" firstAttribute="top" secondItem="B5k-pd-FsC" secondAttribute="bottom" constant="8" symbolic="YES" id="4az-zc-Wsv"/>
                             <constraint firstItem="a2Q-BO-5Lr" firstAttribute="top" secondItem="7mv-VW-Nlk" secondAttribute="bottom" constant="8" symbolic="YES" id="9fm-uE-JeU"/>
+                            <constraint firstItem="B5k-pd-FsC" firstAttribute="leading" secondItem="7mv-VW-Nlk" secondAttribute="leading" id="Hzf-mC-W6e"/>
                             <constraint firstItem="jrA-Km-zk3" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="MCz-oW-5aY"/>
                             <constraint firstItem="jrA-Km-zk3" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="PWf-Xo-4m2"/>
                             <constraint firstItem="7mv-VW-Nlk" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="c0P-zv-NjD"/>
-                            <constraint firstItem="7mv-VW-Nlk" firstAttribute="top" secondItem="jrA-Km-zk3" secondAttribute="bottom" constant="41.333333333333314" id="tUY-Yk-4Lz"/>
+                            <constraint firstItem="7mv-VW-Nlk" firstAttribute="top" secondItem="jrA-Km-zk3" secondAttribute="bottom" constant="80" id="tUY-Yk-4Lz"/>
                             <constraint firstItem="a2Q-BO-5Lr" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="uqa-9Q-kk5"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="B5k-pd-FsC" secondAttribute="trailing" constant="16" id="x5N-3O-wov"/>
                         </constraints>
                     </view>
                     <connections>
@@ -67,6 +76,9 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

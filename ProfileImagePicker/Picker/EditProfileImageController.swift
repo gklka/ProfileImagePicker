@@ -7,7 +7,7 @@
 
 import UIKit
 
-private let Padding: CGFloat = 8.0
+private let Padding: CGFloat = 16.0
 private let CloseButtonSize: CGFloat = 44.0
 private let ProfileImageViewSize: CGFloat = 120.0
 
@@ -55,8 +55,6 @@ class EditProfileImageController: UIViewController {
         self.profileImageView = ProfileImageView(frame: .zero)
         self.profileImageView.profileImage = self.profileImage
         self.profileImageView.editable = false
-        self.profileImageView.layer.borderColor = UIColor.red.cgColor
-        self.profileImageView.layer.borderWidth = 1
     }
     
     override func viewDidLayoutSubviews() {
@@ -68,7 +66,7 @@ class EditProfileImageController: UIViewController {
         
         self.profileImageView.frame = CGRect(
             x: (self.view.bounds.size.width - ProfileImageViewSize) / 2.0,
-            y: 0,
+            y: Padding,
             width: ProfileImageViewSize,
             height: ProfileImageViewSize)
     }

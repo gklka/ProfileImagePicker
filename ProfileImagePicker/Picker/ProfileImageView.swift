@@ -31,6 +31,7 @@ class ProfileImageView: UIView {
         case circle
         case roundRect(CGFloat?)
     }
+    
 
     // MARK: - Properties
 
@@ -62,6 +63,7 @@ class ProfileImageView: UIView {
     var textLabel: UILabel?
     var editButton: UIButton?
     var editController: EditProfileImageController?
+    var gradientLayer: CAGradientLayer?
     
     // MARK: - Lifecycle
     
@@ -84,26 +86,25 @@ class ProfileImageView: UIView {
         case .gradient:
             self.insertGradient()
         case .image:
-            self.backgroundImageView = UIImageView(frame: self.bounds)
+            self.backgroundImageView = UIImageView(frame: .zero)
             self.addSubview(self.backgroundImageView!)
         }
         
         // Add text if set
         if let text = self.profileImage.text {
-            self.textLabel = UILabel(frame: CGRect(origin: CGPoint(x: self.bounds.width * LeftRightMargin, y: 0), size: CGSize(width: self.bounds.size.width * (1 - 2 * LeftRightMargin), height: self.bounds.size.height)))
+            self.textLabel = UILabel(frame: .zero)
             self.textLabel?.text = text
             self.textLabel?.textAlignment = .center
             self.textLabel?.minimumScaleFactor = 0.5
             self.textLabel?.numberOfLines = 1
             self.textLabel?.lineBreakMode = .byTruncatingTail
-            self.textLabel?.font = self.font.withSize(self.bounds.height * FontScaleFactor)
             self.textLabel?.textColor = self.labelColor()
             self.addSubview(self.textLabel!)
         }
         
         // Add edit button
         if self.editable {
-            self.editButton = UIButton(frame: self.bounds)
+            self.editButton = UIButton(frame: .zero)
             self.editButton?.addTarget(self, action: #selector(self.editButtonTapped), for: .touchUpInside)
             self.editButton?.setBackgroundColor(UIColor.gray.withAlphaComponent(0.5), for: .highlighted)
             self.addSubview(self.editButton!)
@@ -123,7 +124,8 @@ class ProfileImageView: UIView {
         self.backgroundColor = .clear
 
         // Remove previous gradients
-        self.layer.sublayers?.filter({ $0 is CAGradientLayer }).forEach({ $0.removeFromSuperlayer() })
+        self.gradientLayer?.removeFromSuperlayer()
+        self.gradientLayer = nil
         
         // Remove background image
         self.backgroundImageView?.removeFromSuperview()
@@ -144,6 +146,21 @@ class ProfileImageView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        // Gradient
+        self.gradientLayer?.frame = self.bounds
+        
+        // Align subviews
+        self.backgroundImageView?.frame = self.bounds
+        self.textLabel?.frame = CGRect(
+            x: self.bounds.width * LeftRightMargin,
+            y: 0,
+            width: self.bounds.size.width * (1 - 2 * LeftRightMargin),
+            height: self.bounds.size.height)
+        self.editButton?.frame = self.bounds
+        
+        // Scale text
+        self.textLabel?.font = self.font.withSize(self.bounds.height * FontScaleFactor)
+
         // Apply frame
         switch self.shape {
         case .square:
@@ -155,6 +172,7 @@ class ProfileImageView: UIView {
         }
     }
     
+
     // MARK: - GUI actions
     
     @objc func editButtonTapped(_ sender: UIButton?) {
@@ -165,6 +183,8 @@ class ProfileImageView: UIView {
         
         self.editController = EditProfileImageController()
         self.editController?.profileImage = self.profileImage
+        self.editController?.profileImageView.shape = self.shape
+        self.editController?.profileImageView.font = self.font
         presentingController.present(self.editController!, animated: true)
     }
     
@@ -177,13 +197,13 @@ class ProfileImageView: UIView {
             return
         }
         
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [self.profileImage.background.firstColor.cgColor, secondColor.cgColor]
-        gradientLayer.locations = [0.0, 1.0]
+        self.gradientLayer = CAGradientLayer()
+        self.gradientLayer?.colors = [self.profileImage.background.firstColor.cgColor, secondColor.cgColor]
+        self.gradientLayer?.locations = [0.0, 1.0]
         
         self.backgroundColor = .clear
-        gradientLayer.frame = self.bounds
-        self.layer.insertSublayer(gradientLayer, at: 0)
+        self.gradientLayer?.frame = self.bounds
+        self.layer.insertSublayer(self.gradientLayer!, at: 0)
     }
     
     /// Retrun a readable color for the label based on the background
