@@ -11,6 +11,7 @@
 		47075EC3299D2C9500BDCB7C /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47075EC2299D2C9500BDCB7C /* ProfileImage.swift */; };
 		47075EC5299D329400BDCB7C /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47075EC4299D329400BDCB7C /* ProfileImageView.swift */; };
 		47075EC7299D420400BDCB7C /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47075EC6299D420400BDCB7C /* UIColor+Extensions.swift */; };
+		47075EC9299D4E6100BDCB7C /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47075EC8299D4E6100BDCB7C /* UIButton+Extensions.swift */; };
 		47A28DEF299D1A27009F8A21 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DEE299D1A27009F8A21 /* AppDelegate.swift */; };
 		47A28DF1299D1A27009F8A21 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DF0299D1A27009F8A21 /* SceneDelegate.swift */; };
 		47A28DF3299D1A27009F8A21 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A28DF2299D1A27009F8A21 /* ViewController.swift */; };
@@ -25,6 +26,7 @@
 		47075EC2299D2C9500BDCB7C /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
 		47075EC4299D329400BDCB7C /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		47075EC6299D420400BDCB7C /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		47075EC8299D4E6100BDCB7C /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
 		47A28DEB299D1A27009F8A21 /* ProfileImagePicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProfileImagePicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A28DEE299D1A27009F8A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47A28DF0299D1A27009F8A21 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 				47075EC2299D2C9500BDCB7C /* ProfileImage.swift */,
 				47075EC4299D329400BDCB7C /* ProfileImageView.swift */,
 				47075EC6299D420400BDCB7C /* UIColor+Extensions.swift */,
+				47075EC8299D4E6100BDCB7C /* UIButton+Extensions.swift */,
 			);
 			path = Picker;
 			sourceTree = "<group>";
@@ -162,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47A28DF3299D1A27009F8A21 /* ViewController.swift in Sources */,
+				47075EC9299D4E6100BDCB7C /* UIButton+Extensions.swift in Sources */,
 				47075EC7299D420400BDCB7C /* UIColor+Extensions.swift in Sources */,
 				47075EC3299D2C9500BDCB7C /* ProfileImage.swift in Sources */,
 				47075EC5299D329400BDCB7C /* ProfileImageView.swift in Sources */,

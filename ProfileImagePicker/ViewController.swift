@@ -15,7 +15,18 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Config profile image view
+        self.profileImageView.delegate = self
+        self.profileImageView.editable = true
         self.profileImageView.profileImage = self.profileImage
     }
 }
 
+extension ViewController: ProfileImageViewDelegate {
+    func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage) {
+        self.profileImage = profileImage
+        
+        // TODO: upload image, store it permanently
+    }
+}

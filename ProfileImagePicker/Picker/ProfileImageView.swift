@@ -11,6 +11,10 @@ private let RoundRectCornerRadius: CGFloat = 8.0
 private let LeftRightMargin = 0.1 // in width %
 private let FontScaleFactor = 0.5 // % of the view height
 
+protocol ProfileImageViewDelegate {
+    func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage)
+}
+
 class ProfileImageView: UIView {
     enum Shape {
         case circle
@@ -28,7 +32,13 @@ class ProfileImageView: UIView {
     }
     public var shape: Shape = .circle
     public var font: UIFont = UIFont.systemFont(ofSize: UIFont.systemFontSize)
-    public var editable: Bool = true
+    public var editable: Bool = false {
+        didSet {
+            self.reset()
+            self.setup()
+        }
+    }
+    public var delegate: ProfileImageViewDelegate?
     
     // Subviews
     var backgroundImageView: UIImageView?
@@ -76,6 +86,7 @@ class ProfileImageView: UIView {
         if self.editable {
             self.editButton = UIButton(frame: self.bounds)
             self.editButton?.addTarget(self, action: #selector(self.editButtonTapped), for: .touchUpInside)
+            self.editButton?.setBackgroundColor(UIColor.gray.withAlphaComponent(0.5), for: .highlighted)
             self.addSubview(self.editButton!)
         }
         
@@ -107,6 +118,10 @@ class ProfileImageView: UIView {
         // Remove text
         self.textLabel?.removeFromSuperview()
         self.textLabel = nil
+        
+        // Remove edit button
+        self.editButton?.removeFromSuperview()
+        self.editButton = nil
     }
     
     // MARK: - GUI actions
