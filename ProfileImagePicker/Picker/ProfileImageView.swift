@@ -11,14 +11,25 @@ private let RoundRectCornerRadius: CGFloat = 8.0
 private let LeftRightMargin = 0.1 // in width %
 private let FontScaleFactor = 0.5 // % of the view height
 
+/// You must implement this delegate in order to be able to change images
 protocol ProfileImageViewDelegate {
+    /// Will be called when the profile image view has changed the profile image. The caller's responsibility is to save/upload the given image or drop it and error to the user if not possible.
+    /// - Parameters:
+    ///   - profileImageView: The image view
+    ///   - profileImage: The new profile image
     func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage)
+    
+    /// Profile image view will ask for a controller when it wants to present its image editing controller
+    /// - Parameter profileImageView: The image view
+    /// - Returns: You should return a view controller which can be used for presenting a modal or popover controller, depending on the platform
+    func profileImageViewPresentationController(_ profileImageView: ProfileImageView) -> UIViewController
 }
 
 class ProfileImageView: UIView {
     enum Shape {
+        case square
         case circle
-        case roundRect
+        case roundRect(CGFloat?)
     }
 
     // MARK: - Properties
@@ -26,11 +37,17 @@ class ProfileImageView: UIView {
     // Content properties
     public var profileImage: ProfileImage = ProfileImage() {
         didSet {
+            print("profileimageview: setting new image: \(profileImage)")
             self.reset()
             self.setup()
         }
     }
-    public var shape: Shape = .circle
+    public var shape: Shape = .circle {
+        didSet {
+            self.reset()
+            self.setup()
+        }
+    }
     public var font: UIFont = UIFont.systemFont(ofSize: UIFont.systemFontSize)
     public var editable: Bool = false {
         didSet {
@@ -44,6 +61,7 @@ class ProfileImageView: UIView {
     var backgroundImageView: UIImageView?
     var textLabel: UILabel?
     var editButton: UIButton?
+    var editController: EditProfileImageController?
     
     // MARK: - Lifecycle
     
@@ -57,6 +75,7 @@ class ProfileImageView: UIView {
         self.setup()
     }
     
+    /// Setup view based on the current `profileImage`
     func setup() {
         // Configure background
         switch self.profileImage.background.type {
@@ -90,13 +109,7 @@ class ProfileImageView: UIView {
             self.addSubview(self.editButton!)
         }
         
-        // Apply frame
-        switch self.shape {
-        case .circle:
-            self.layer.cornerRadius = self.bounds.height / 2.0
-        case .roundRect:
-            self.layer.cornerRadius = RoundRectCornerRadius
-        }
+        // Hide parts out of shape
         self.layer.masksToBounds = true
         
         // Set accessibility
@@ -104,6 +117,7 @@ class ProfileImageView: UIView {
         self.accessibilityLabel = "Profile image"
     }
     
+    /// Reset all properties to initial state, remove all added subviews
     func reset() {
         // Remove background color
         self.backgroundColor = .clear
@@ -122,16 +136,41 @@ class ProfileImageView: UIView {
         // Remove edit button
         self.editButton?.removeFromSuperview()
         self.editButton = nil
+        
+        // Clean edit controller
+        self.editController = nil
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Apply frame
+        switch self.shape {
+        case .square:
+            self.layer.cornerRadius = 0
+        case .circle:
+            self.layer.cornerRadius = self.bounds.height / 2.0
+        case .roundRect(let radius):
+            self.layer.cornerRadius = radius ?? RoundRectCornerRadius
+        }
     }
     
     // MARK: - GUI actions
     
     @objc func editButtonTapped(_ sender: UIButton?) {
-        print("tap!")
+        guard let presentingController = self.delegate?.profileImageViewPresentationController(self) else {
+            print("No presenting controller provided, cannot open edit controller")
+            return
+        }
+        
+        self.editController = EditProfileImageController()
+        self.editController?.profileImage = self.profileImage
+        presentingController.present(self.editController!, animated: true)
     }
     
     // MARK: - Helper functions
-
+    
+    /// Adds a gradient layer based on the current `profileImage` background
     func insertGradient() {
         guard let secondColor = self.profileImage.background.secondColor else {
             print("Wrong function call: secondColor is empty")
@@ -147,6 +186,8 @@ class ProfileImageView: UIView {
         self.layer.insertSublayer(gradientLayer, at: 0)
     }
     
+    /// Retrun a readable color for the label based on the background
+    /// - Returns: Color for the text
     func labelColor() -> UIColor {
         switch self.profileImage.background.type {
         case .color:
