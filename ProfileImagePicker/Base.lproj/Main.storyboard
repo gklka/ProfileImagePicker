@@ -20,8 +20,8 @@
                                 <rect key="frame" x="136.66666666666666" y="378.66666666666669" width="119.99999999999997" height="120"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="ZPD-js-I4X"/>
                                     <constraint firstAttribute="height" constant="120" id="ZWZ-yS-xPP"/>
+                                    <constraint firstAttribute="width" secondItem="jrA-Km-zk3" secondAttribute="height" multiplier="1:1" id="rEn-Yt-2Ek"/>
                                 </constraints>
                             </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="7mv-VW-Nlk">
@@ -50,6 +50,15 @@
                                 <color key="textColor" systemColor="secondaryLabelColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="120" minValue="30" maxValue="300" translatesAutoresizingMaskIntoConstraints="NO" id="FIg-gh-XaH">
+                                <rect key="frame" x="67" y="75" width="259.33333333333337" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="255.33333333333337" id="hbC-ld-Mzd"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="sizeChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="0Q9-Ah-9pf"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -58,7 +67,9 @@
                             <constraint firstItem="a2Q-BO-5Lr" firstAttribute="top" secondItem="7mv-VW-Nlk" secondAttribute="bottom" constant="8" symbolic="YES" id="9fm-uE-JeU"/>
                             <constraint firstItem="B5k-pd-FsC" firstAttribute="leading" secondItem="7mv-VW-Nlk" secondAttribute="leading" id="Hzf-mC-W6e"/>
                             <constraint firstItem="jrA-Km-zk3" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="MCz-oW-5aY"/>
+                            <constraint firstItem="FIg-gh-XaH" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Meg-VI-U5d"/>
                             <constraint firstItem="jrA-Km-zk3" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="PWf-Xo-4m2"/>
+                            <constraint firstItem="FIg-gh-XaH" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="a0e-vh-dfa"/>
                             <constraint firstItem="7mv-VW-Nlk" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="c0P-zv-NjD"/>
                             <constraint firstItem="7mv-VW-Nlk" firstAttribute="top" secondItem="jrA-Km-zk3" secondAttribute="bottom" constant="80" id="tUY-Yk-4Lz"/>
                             <constraint firstItem="a2Q-BO-5Lr" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="uqa-9Q-kk5"/>
@@ -66,13 +77,14 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="heightConstraint" destination="ZWZ-yS-xPP" id="oKN-v7-1uA"/>
                         <outlet property="profileImageView" destination="jrA-Km-zk3" id="ET1-K3-yIZ"/>
                         <outlet property="radiusSlider" destination="a2Q-BO-5Lr" id="FQW-uh-vFZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="136.64122137404578" y="4.9295774647887329"/>
+            <point key="canvasLocation" x="135.1145038167939" y="4.9295774647887329"/>
         </scene>
     </scenes>
     <resources>

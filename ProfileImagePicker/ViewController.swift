@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var profileImageView: ProfileImageView!
     @IBOutlet weak var radiusSlider: UISlider!
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
     var radius: CGFloat = 8.0
     
     // The current profile image
@@ -43,6 +44,10 @@ class ViewController: UIViewController {
     @IBAction func radiusChanged(_ sender: UISlider) {
         self.radius = CGFloat(sender.value)
         self.profileImageView.shape = .roundRect(self.radius)
+    }
+    
+    @IBAction func sizeChanged(_ sender: UISlider) {
+        self.heightConstraint.constant = CGFloat(sender.value)
     }
 }
 

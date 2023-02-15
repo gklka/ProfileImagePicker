@@ -147,7 +147,10 @@ class ProfileImageView: UIView {
         super.layoutSubviews()
         
         // Gradient
+        CATransaction.begin()
+        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions) // Avoid animating CALayer
         self.gradientLayer?.frame = self.bounds
+        CATransaction.commit()
         
         // Align subviews
         self.backgroundImageView?.frame = self.bounds
