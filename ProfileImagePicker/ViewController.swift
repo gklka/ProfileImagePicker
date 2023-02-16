@@ -56,6 +56,7 @@ extension ViewController: ProfileImageViewDelegate {
         self.profileImage = profileImage
         
         // TODO: upload image, store it permanently
+        print("New selected profile image: \(profileImage)")
     }
     
     func profileImageViewPresentationController(_ profileImageView: ProfileImageView) -> UIViewController {

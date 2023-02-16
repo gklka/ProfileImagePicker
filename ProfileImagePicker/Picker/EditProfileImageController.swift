@@ -101,6 +101,7 @@ class EditProfileImageController: UIViewController {
         self.view.addSubview(self.textTitleLabel)
         self.view.addSubview(self.textField)
         
+        // Update interface from models
         self.refreshInterface()
     }
     
@@ -493,6 +494,7 @@ extension EditProfileImageController: ColorButtonDelegate {
         switch self.profileImage.background {
         case .color(let color):
             firstColor = color
+            secondColor = .clear
         case .gradient(let fc, let sc):
             firstColor = fc
             secondColor = sc
@@ -542,6 +544,7 @@ extension EditProfileImageController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
         return true
     }
 }
