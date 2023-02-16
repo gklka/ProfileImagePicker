@@ -38,7 +38,20 @@ The demo project demonstrates a `ProfileImageView` with a default text and gradi
 
 Both `ProfileImageView` and `EditProfileImageController` uses the delegate pattern to provide the results to the caller. It is the callers responsibility to store the profile image details and upload the underlying images if needed.
 
-The profile image has either an image, a color or a gradient background, and (a nullable) text on it.
+The profile image has either an `image`, a `color` or a `gradient` background, and (a nullable) `text` on it:
+
+```swift
+struct ProfileImage {
+    enum BackgroundType {
+        case color(UIColor)
+        case gradient(UIColor, UIColor)
+        case image(UIImage)
+    }
+
+    var background = BackgroundType.color(.gray)
+    var text: String?
+}
+```
 
 ## Usage
 
