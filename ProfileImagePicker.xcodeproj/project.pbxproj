@@ -21,6 +21,7 @@
 		47A28DFB299D1A28009F8A21 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A28DF9299D1A28009F8A21 /* LaunchScreen.storyboard */; };
 		47E3AE2B299D784F0082FF32 /* ImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E3AE2A299D784F0082FF32 /* ImageButton.swift */; };
 		47E3AE2D299EB7080082FF32 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E3AE2C299EB7080082FF32 /* UIImage+Extensions.swift */; };
+		47E3AE2F299ECD720082FF32 /* ColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E3AE2E299ECD720082FF32 /* ColorButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		47A28DFC299D1A28009F8A21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47E3AE2A299D784F0082FF32 /* ImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageButton.swift; sourceTree = "<group>"; };
 		47E3AE2C299EB7080082FF32 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		47E3AE2E299ECD720082FF32 /* ColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				47075EC8299D4E6100BDCB7C /* UIButton+Extensions.swift */,
 				47E3AE2C299EB7080082FF32 /* UIImage+Extensions.swift */,
 				47E3AE2A299D784F0082FF32 /* ImageButton.swift */,
+				47E3AE2E299ECD720082FF32 /* ColorButton.swift */,
 			);
 			path = Picker;
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 				47A28DF3299D1A27009F8A21 /* ViewController.swift in Sources */,
 				47075EC9299D4E6100BDCB7C /* UIButton+Extensions.swift in Sources */,
 				47075ECB299D51E100BDCB7C /* EditProfileImageController.swift in Sources */,
+				47E3AE2F299ECD720082FF32 /* ColorButton.swift in Sources */,
 				47075EC7299D420400BDCB7C /* UIColor+Extensions.swift in Sources */,
 				47E3AE2B299D784F0082FF32 /* ImageButton.swift in Sources */,
 				47075EC3299D2C9500BDCB7C /* ProfileImage.swift in Sources */,

@@ -8,7 +8,7 @@
 import UIKit
 import UniformTypeIdentifiers
 
-private let Padding: CGFloat = 16.0
+private let Padding: CGFloat = 20.0
 private let CloseButtonSize: CGFloat = 44.0
 private let ProfileImageViewSize: CGFloat = 120.0
 private let ButtonPadding: CGFloat = 8.0
@@ -27,23 +27,41 @@ protocol EditProfileImageControllerDelegate {
 class EditProfileImageController: UIViewController {
     // MARK: - Properties
     
+    /// The profile image to display.
     var profileImage: ProfileImage = ProfileImage() {
         didSet {
             self.profileImageView.profileImage = profileImage
+            self.refreshInterface()
         }
     }
+    /// The controller provides the new profile image via this delegate
     var delegate: EditProfileImageControllerDelegate?
-    
+
+    // Views
     var closeButton: UIButton!
     var profileImageView: ProfileImageView!
     var backgroundTitleLabel: UILabel!
+    
     var cameraButton: UIButton!
     var photosButton: UIButton!
     var filesButton: UIButton!
     var colorButton: UIButton!
     
+    var colorSettingsView: UIView!
+    var startColorLabel: UILabel!
+    var endColorLabel: UILabel!
+    var startColorButton: ColorButton!
+    var endColorButton: ColorButton!
+    var textField: UITextField!
+    
+    // Reference to picker controllers
     var imagePickerController: UIImagePickerController?
     var documentPicker: UIDocumentPickerViewController?
+    
+    // Interface state
+    var lastFirstColor: UIColor = .blue
+    var lastSecondColor: UIColor = .purple
+    var lastImage: UIImage?
     
     // MARK: - Lifecycle
     
@@ -67,10 +85,19 @@ class EditProfileImageController: UIViewController {
         self.view.addSubview(self.closeButton)
         self.view.addSubview(self.profileImageView)
         self.view.addSubview(self.backgroundTitleLabel)
+        
         self.view.addSubview(self.cameraButton)
         self.view.addSubview(self.photosButton)
         self.view.addSubview(self.filesButton)
         self.view.addSubview(self.colorButton)
+        
+        self.colorSettingsView.addSubview(self.startColorLabel)
+        self.colorSettingsView.addSubview(self.startColorButton)
+        self.colorSettingsView.addSubview(self.endColorLabel)
+        self.colorSettingsView.addSubview(self.endColorButton)
+        self.view.addSubview(self.colorSettingsView)
+        
+        self.refreshInterface()
     }
     
     func setup() {
@@ -109,6 +136,24 @@ class EditProfileImageController: UIViewController {
         // Color button
         self.colorButton = ImageButton(systemImage: "paintpalette", title: NSLocalizedString("Color", comment: "Edit profile image - Color"))
         self.colorButton.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
+        
+        // Color settings view
+        self.colorSettingsView = UIView(frame: .zero)
+        
+        // Start color
+        self.startColorLabel = UILabel(frame: .zero)
+        self.startColorLabel.text = NSLocalizedString("Start Color", comment: "Edit profile image - label")
+        self.startColorButton = ColorButton(color: self.lastFirstColor, delegate: self)
+        
+        // End color
+        self.endColorLabel = UILabel(frame: .zero)
+        self.endColorLabel.text = NSLocalizedString("End Color", comment: "Edit profile image - label")
+        self.endColorButton = ColorButton(color: self.lastSecondColor, delegate: self)
+        
+        // TextField
+        self.textField = UITextField(frame: .zero)
+        self.textField.placeholder = NSLocalizedString("Try adding an emoji 👽", comment: "Edit profile image - text placeholder")
+        self.textField.delegate = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -153,6 +198,38 @@ class EditProfileImageController: UIViewController {
             y: self.cameraButton.frame.origin.y,
             width: (self.view.bounds.width - 2 * Padding - 3 * ButtonPadding) / 4.0,
             height: ButtonHeight)
+        
+        if !self.colorSettingsView.isHidden {
+            self.colorSettingsView.frame = CGRect(
+                x: Padding,
+                y: self.colorButton.frame.origin.y + self.colorButton.frame.size.height + Padding,
+                width: self.view.bounds.width - 2 * Padding,
+                height: self.startColorLabel.intrinsicContentSize.height + Padding + self.endColorLabel.intrinsicContentSize.height)
+            
+            self.startColorLabel.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: self.startColorLabel.intrinsicContentSize.width,
+                height: self.startColorLabel.intrinsicContentSize.height)
+
+            self.endColorLabel.frame = CGRect(
+                x: 0,
+                y: self.startColorLabel.frame.origin.y + self.startColorLabel.frame.height + Padding,
+                width: self.endColorLabel.intrinsicContentSize.width,
+                height: self.endColorLabel.intrinsicContentSize.height)
+            
+            self.startColorButton.frame = CGRect(
+                x: self.colorSettingsView.bounds.size.width - self.startColorButton.intrinsicContentSize.width,
+                y: self.startColorLabel.frame.origin.y,
+                width: self.startColorButton.intrinsicContentSize.width,
+                height: self.startColorLabel.bounds.size.height)
+
+            self.endColorButton.frame = CGRect(
+                x: self.colorSettingsView.bounds.size.width - self.endColorButton.intrinsicContentSize.width,
+                y: self.endColorLabel.frame.origin.y,
+                width: self.endColorButton.intrinsicContentSize.width,
+                height: self.endColorLabel.bounds.size.height)
+        }
     }
     
     // MARK: - GUI actions
@@ -206,6 +283,13 @@ class EditProfileImageController: UIViewController {
     }
     
     @objc func colorButtonTapped(_ sender: ImageButton) {
+        if case ProfileImage.BackgroundType.image(_) = self.profileImage.background {
+            self.profileImage.background = .gradient(self.lastFirstColor, self.lastSecondColor)
+        } else {
+            if let image = self.lastImage {
+                self.profileImage.background = .image(image)
+            }
+        }
     }
     
     // MARK: - Helper functions
@@ -229,6 +313,44 @@ class EditProfileImageController: UIViewController {
         var newProfileImage = self.profileImage // New copy
         newProfileImage.background = .image(scaledImage)
         self.profileImage = newProfileImage
+    }
+    
+    func refreshInterface() {
+        switch self.profileImage.background {
+        case .color(let color):
+            self.lastFirstColor = color
+            self.startColorButton.color = color
+
+            self.colorButton.layer.borderColor = UIColor.tintColor.cgColor
+            self.colorButton.layer.borderWidth = 2.0
+            self.colorButton.layer.masksToBounds = true
+            self.colorButton.layer.cornerRadius = 4.0
+            
+            self.colorSettingsView.isHidden = false
+            self.endColorButton.striked = true
+            self.endColorButton.color = .clear
+
+        case .gradient(let firstColor, let secondColor):
+            self.lastFirstColor = firstColor
+            self.lastSecondColor = secondColor
+            self.startColorButton.color = firstColor
+            self.endColorButton.color = secondColor
+
+            self.colorButton.layer.borderColor = UIColor.tintColor.cgColor
+            self.colorButton.layer.borderWidth = 2.0
+            self.colorButton.layer.masksToBounds = true
+            self.colorButton.layer.cornerRadius = 4.0
+
+            self.colorSettingsView.isHidden = false
+            self.endColorButton.striked = false
+
+        case .image(let image):
+            self.lastImage = image
+            
+            self.colorButton.layer.borderWidth = 0
+            
+            self.colorSettingsView.isHidden = true
+        }
     }
 }
 
@@ -321,4 +443,54 @@ extension EditProfileImageController: UIDropInteractionDelegate {
             self.setNewBackgroundImage(image)
         }
     }
+}
+
+// MARK: - Color Button delegate
+
+extension EditProfileImageController: ColorButtonDelegate {
+    func colorButton(_ colorButton: ColorButton, didSetColor color: UIColor) {
+        // Defaults
+        var firstColor = self.lastFirstColor
+        var secondColor = self.lastSecondColor
+
+        // Get the current colors
+        switch self.profileImage.background {
+        case .color(let color):
+            firstColor = color
+        case .gradient(let fc, let sc):
+            firstColor = fc
+            secondColor = sc
+        default:
+            return
+        }
+        
+        // Update the correct color
+        if colorButton == self.startColorButton {
+            firstColor = color
+        } else if colorButton == self.endColorButton {
+            secondColor = color
+        }
+        
+        // Set new profile image
+        var newProfileImage = self.profileImage // New copy
+        
+        // If the second color is transparent or the same, then we use only one color
+        if secondColor.isTransparent() || firstColor == secondColor {
+            newProfileImage.background = .color(firstColor)
+        } else {
+            newProfileImage.background = .gradient(firstColor, secondColor)
+        }
+        
+        self.profileImage = newProfileImage
+    }
+    
+    func colorButtonPresentationController(_ colorButton: ColorButton) -> UIViewController {
+        return self
+    }
+}
+
+// MARK: - Text Field delegate
+
+extension EditProfileImageController: UITextFieldDelegate {
+    
 }

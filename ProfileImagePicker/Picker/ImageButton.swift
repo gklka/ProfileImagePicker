@@ -24,7 +24,6 @@ class ImageButton: UIButton {
         configuration.imagePadding = 8.0
         
         self.init(configuration: configuration)
-        
 
         let imageConfig = UIImage.SymbolConfiguration(weight: .bold)
         self.setImage(UIImage(systemName: systemImage, withConfiguration: imageConfig), for: .normal)

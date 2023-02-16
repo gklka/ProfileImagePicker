@@ -11,7 +11,6 @@ import UIKit
 extension UIColor {
     func isLight() -> Bool {
         // Algorithm from: http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-        // algorithm from: http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
         var r: CGFloat = 0.0
         var g: CGFloat = 0.0
         var b: CGFloat = 0.0
@@ -26,6 +25,17 @@ extension UIColor {
         } else {
             return true
         }
+    }
+    
+    func isTransparent() -> Bool {
+        var r: CGFloat = 0.0
+        var g: CGFloat = 0.0
+        var b: CGFloat = 0.0
+        var a: CGFloat = 0.0
+        
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+
+        return a == 0.0
     }
 }
 
