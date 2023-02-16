@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     var radius: CGFloat = 8.0
     
     // The current profile image
-    var profileImage = ProfileImage(background: ProfileImage.Background(type: .gradient, firstColor: .blue, secondColor: .purple), text: "GK")
+    var profileImage = ProfileImage(background: .gradient(.blue, .purple), text: "GK")
     
     override func viewDidLoad() {
         super.viewDidLoad()

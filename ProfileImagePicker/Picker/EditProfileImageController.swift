@@ -158,6 +158,7 @@ class EditProfileImageController: UIViewController {
         self.imagePickerController = UIImagePickerController()
         if let imagePickerController = self.imagePickerController {
             imagePickerController.sourceType = .photoLibrary
+            imagePickerController.mediaTypes = [UTType.image.identifier as String]
             imagePickerController.allowsEditing = true
             imagePickerController.delegate = self
             self.present(imagePickerController, animated: true)
@@ -188,8 +189,13 @@ extension EditProfileImageController: UIImagePickerControllerDelegate {
             print("No image found")
             return
         }
+
+        print("Selected image: \(image)")
         
-        print(image)
+        var newProfileImage = self.profileImage // New copy
+        newProfileImage.background = .image(image)
+        self.profileImage = newProfileImage
+        
         self.imagePickerController = nil
     }
 }

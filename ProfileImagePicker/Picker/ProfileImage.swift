@@ -8,19 +8,12 @@
 import UIKit
 
 struct ProfileImage {
-    struct Background {
-        enum BackgroundType: String {
-            case color
-            case gradient
-            case image
-        }
-        
-        var type: BackgroundType = .color
-        var image: UIImage?
-        var firstColor: UIColor = .gray
-        var secondColor: UIColor?
+    enum BackgroundType {
+        case color(UIColor)
+        case gradient(UIColor, UIColor)
+        case image(UIImage)
     }
-    
-    var background: Background = Background(type: .color)
+
+    var background = BackgroundType.color(.gray)
     var text: String?
 }

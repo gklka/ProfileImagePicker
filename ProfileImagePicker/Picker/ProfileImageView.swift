@@ -38,7 +38,6 @@ class ProfileImageView: UIView {
     // Content properties
     public var profileImage: ProfileImage = ProfileImage() {
         didSet {
-            print("profileimageview: setting new image: \(profileImage)")
             self.reset()
             self.setup()
         }
@@ -80,13 +79,15 @@ class ProfileImageView: UIView {
     /// Setup view based on the current `profileImage`
     func setup() {
         // Configure background
-        switch self.profileImage.background.type {
-        case .color:
-            self.backgroundColor = self.profileImage.background.firstColor
-        case .gradient:
-            self.insertGradient()
-        case .image:
+        switch self.profileImage.background {
+        case .color(let color):
+            self.backgroundColor = color
+        case .gradient(let firstColor, let secondColor):
+            self.insertGradient(firstColor: firstColor, secondColor: secondColor)
+        case .image(let image):
             self.backgroundImageView = UIImageView(frame: .zero)
+            self.backgroundImageView?.image = image
+            self.backgroundImageView?.contentMode = .scaleAspectFill
             self.addSubview(self.backgroundImageView!)
         }
         
@@ -194,14 +195,9 @@ class ProfileImageView: UIView {
     // MARK: - Helper functions
     
     /// Adds a gradient layer based on the current `profileImage` background
-    func insertGradient() {
-        guard let secondColor = self.profileImage.background.secondColor else {
-            print("Wrong function call: secondColor is empty")
-            return
-        }
-        
+    func insertGradient(firstColor: UIColor, secondColor: UIColor) {
         self.gradientLayer = CAGradientLayer()
-        self.gradientLayer?.colors = [self.profileImage.background.firstColor.cgColor, secondColor.cgColor]
+        self.gradientLayer?.colors = [firstColor.cgColor, secondColor.cgColor]
         self.gradientLayer?.locations = [0.0, 1.0]
         
         self.backgroundColor = .clear
@@ -212,12 +208,12 @@ class ProfileImageView: UIView {
     /// Retrun a readable color for the label based on the background
     /// - Returns: Color for the text
     func labelColor() -> UIColor {
-        switch self.profileImage.background.type {
-        case .color:
-            return self.profileImage.background.firstColor.isLight() ? .black : .white
-        case .gradient:
-            return self.profileImage.background.firstColor.isLight() ? .black : .white // TODO: must analyze avg color of gradient
-        case .image:
+        switch self.profileImage.background {
+        case .color(let color):
+            return color.isLight() ? .black : .white
+        case .gradient(let firstColor, _):
+            return firstColor.isLight() ? .black : .white // TODO: must analyze avg color of gradient
+        case .image(_):
             return .white // TODO: must analyze avg color of image
         }
     }
