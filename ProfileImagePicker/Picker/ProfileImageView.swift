@@ -186,6 +186,7 @@ class ProfileImageView: UIView {
         }
         
         self.editController = EditProfileImageController()
+        self.editController?.delegate = self
         self.editController?.profileImage = self.profileImage
         self.editController?.profileImageView.shape = self.shape
         self.editController?.profileImageView.font = self.font
@@ -215,6 +216,18 @@ class ProfileImageView: UIView {
             return firstColor.isLight() ? .black : .white // TODO: must analyze avg color of gradient
         case .image(_):
             return .white // TODO: must analyze avg color of image
+        }
+    }
+}
+
+// MARK: - Edit Profile Image Controller delegate
+
+extension ProfileImageView: EditProfileImageControllerDelegate {
+    func editProfileImageViewController(_ controller: EditProfileImageController, wantsToChangeImageTo profileImage: ProfileImage) {
+        self.profileImage = profileImage
+
+        if let delegate = self.delegate {
+            delegate.profileImageView(self, wantsToChangeImageTo: profileImage)
         }
     }
 }

@@ -14,6 +14,14 @@ private let ProfileImageViewSize: CGFloat = 120.0
 private let ButtonPadding: CGFloat = 8.0
 private let ButtonHeight: CGFloat = 70.0 // TODO: Should depend on font size
 
+protocol EditProfileImageControllerDelegate {
+    /// Will be called when the profile image view has changed the profile image. The caller's responsibility is to save/upload the given image or drop it and error to the user if not possible.
+    /// - Parameters:
+    ///   - controller: The edit profile image controller
+    ///   - profileImage: The new profile image
+    func editProfileImageViewController(_ controller: EditProfileImageController, wantsToChangeImageTo profileImage: ProfileImage)
+}
+
 class EditProfileImageController: UIViewController {
     // MARK: - Properties
     
@@ -22,6 +30,7 @@ class EditProfileImageController: UIViewController {
             self.profileImageView.profileImage = profileImage
         }
     }
+    var delegate: EditProfileImageControllerDelegate?
     
     var closeButton: UIButton!
     var profileImageView: ProfileImageView!
@@ -48,6 +57,9 @@ class EditProfileImageController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Background
+        self.view.backgroundColor = .secondarySystemBackground
 
         // Build UI
         self.view.addSubview(self.closeButton)
@@ -141,41 +153,65 @@ class EditProfileImageController: UIViewController {
     // MARK: - GUI actions
     
     @objc func closeButtonTapped(_ sender: UIButton?) {
+        if let delegate = self.delegate {
+            delegate.editProfileImageViewController(self, wantsToChangeImageTo: self.profileImage)
+        }
         self.dismiss(animated: true)
     }
     
     @objc func cameraButtonTapped(_ sender: ImageButton) {
+        self.enableButtons(false)
         self.imagePickerController = UIImagePickerController()
         if let imagePickerController = self.imagePickerController {
             imagePickerController.sourceType = .camera
+            imagePickerController.cameraDevice = .front
             imagePickerController.allowsEditing = true
             imagePickerController.delegate = self
+            imagePickerController.modalPresentationStyle = .popover
+            imagePickerController.popoverPresentationController?.sourceView = sender
+            imagePickerController.popoverPresentationController?.delegate = self
             self.present(imagePickerController, animated: true)
         }
     }
     
     @objc func photosButtonTapped(_ sender: ImageButton) {
+        self.enableButtons(false)
         self.imagePickerController = UIImagePickerController()
         if let imagePickerController = self.imagePickerController {
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.mediaTypes = [UTType.image.identifier as String]
             imagePickerController.allowsEditing = true
             imagePickerController.delegate = self
+            imagePickerController.modalPresentationStyle = .popover
+            imagePickerController.popoverPresentationController?.sourceView = sender
+            imagePickerController.popoverPresentationController?.delegate = self
             self.present(imagePickerController, animated: true)
         }
     }
     
     @objc func filesButtonTapped(_ sender: ImageButton) {
+        self.enableButtons(false)
         self.documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.image], asCopy: false)
         if let documentPicker = self.documentPicker {
             documentPicker.allowsMultipleSelection = false
             documentPicker.delegate = self
+            documentPicker.modalPresentationStyle = .popover
+            documentPicker.popoverPresentationController?.sourceView = sender
+            documentPicker.popoverPresentationController?.delegate = self
             self.present(documentPicker, animated: true)
         }
     }
     
     @objc func colorButtonTapped(_ sender: ImageButton) {
-        
+    }
+    
+    // MARK: - Helper functions
+    
+    func enableButtons(_ enable: Bool) {
+        self.cameraButton.isEnabled = enable
+        self.photosButton.isEnabled = enable
+        self.filesButton.isEnabled = enable
+        self.colorButton.isEnabled = enable
     }
 }
 
@@ -189,7 +225,7 @@ extension EditProfileImageController: UIImagePickerControllerDelegate {
             print("No image found")
             return
         }
-
+        
         print("Selected image: \(image)")
         
         var newProfileImage = self.profileImage // New copy
@@ -197,12 +233,20 @@ extension EditProfileImageController: UIImagePickerControllerDelegate {
         self.profileImage = newProfileImage
         
         self.imagePickerController = nil
+        self.enableButtons(true)
     }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+        self.enableButtons(true)
+    }
+    
 }
 
 // MARK: - Navigation Controller delegate
 
 extension EditProfileImageController: UINavigationControllerDelegate {
+    
 }
 
 // MARK: - Document Picker Controller delegate
@@ -212,10 +256,19 @@ extension EditProfileImageController: UIDocumentPickerDelegate {
         controller.dismiss(animated: true)
         print("didpick2")
         print(urls)
+        self.enableButtons(true)
     }
     
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true)
-        print("dismiss")
+        self.enableButtons(true)
+    }
+}
+
+// MARK: - Popover Presentation Controller delegate
+
+extension EditProfileImageController: UIPopoverPresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        self.enableButtons(true)
     }
 }
