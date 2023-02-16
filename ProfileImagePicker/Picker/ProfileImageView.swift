@@ -98,8 +98,9 @@ class ProfileImageView: UIView {
             self.textLabel?.textAlignment = .center
             self.textLabel?.minimumScaleFactor = 0.5
             self.textLabel?.numberOfLines = 1
-            self.textLabel?.lineBreakMode = .byTruncatingTail
+            self.textLabel?.lineBreakMode = .byCharWrapping
             self.textLabel?.textColor = self.labelColor()
+            self.textLabel?.adjustsFontSizeToFitWidth = true
             self.addSubview(self.textLabel!)
         }
         
@@ -231,3 +232,4 @@ extension ProfileImageView: EditProfileImageControllerDelegate {
         }
     }
 }
+

@@ -52,6 +52,7 @@ class EditProfileImageController: UIViewController {
     var endColorLabel: UILabel!
     var startColorButton: ColorButton!
     var endColorButton: ColorButton!
+    var textTitleLabel: UILabel!
     var textField: UITextField!
     
     // Reference to picker controllers
@@ -96,6 +97,9 @@ class EditProfileImageController: UIViewController {
         self.colorSettingsView.addSubview(self.endColorLabel)
         self.colorSettingsView.addSubview(self.endColorButton)
         self.view.addSubview(self.colorSettingsView)
+        
+        self.view.addSubview(self.textTitleLabel)
+        self.view.addSubview(self.textField)
         
         self.refreshInterface()
     }
@@ -150,11 +154,21 @@ class EditProfileImageController: UIViewController {
         self.endColorLabel.text = NSLocalizedString("End Color", comment: "Edit profile image - label")
         self.endColorButton = ColorButton(color: self.lastSecondColor, delegate: self)
         
+        // Text title
+        self.textTitleLabel = UILabel(frame: .zero)
+        self.textTitleLabel.text = NSLocalizedString("Text", comment: "Edit profile image - title").uppercased()
+        self.textTitleLabel.font = UIFont.boldSystemFont(ofSize: UIFont.smallSystemFontSize)
+        self.textTitleLabel.textColor = .secondaryLabel
+
         // TextField
         self.textField = UITextField(frame: .zero)
         self.textField.placeholder = NSLocalizedString("Try adding an emoji 👽", comment: "Edit profile image - text placeholder")
+        self.textField.borderStyle = .roundedRect
+        self.textField.text = self.profileImage.text
         self.textField.delegate = self
     }
+    
+    // MARK: - Layouting
     
     override func viewDidLayoutSubviews() {
         self.closeButton.frame = CGRect(
@@ -173,7 +187,7 @@ class EditProfileImageController: UIViewController {
             x: Padding,
             y: Padding + ProfileImageViewSize + Padding,
             width: self.view.bounds.size.width - 2 * Padding,
-            height: UIFont.smallSystemFontSize)
+            height: self.backgroundTitleLabel.intrinsicContentSize.height)
         
         self.cameraButton.frame = CGRect(
             x: Padding,
@@ -199,7 +213,13 @@ class EditProfileImageController: UIViewController {
             width: (self.view.bounds.width - 2 * Padding - 3 * ButtonPadding) / 4.0,
             height: ButtonHeight)
         
-        if !self.colorSettingsView.isHidden {
+        if self.colorSettingsView.isHidden {
+            self.textTitleLabel.frame = CGRect(
+                x: Padding,
+                y: self.colorButton.frame.origin.y + self.colorButton.frame.size.height + Padding * 2.0,
+                width: self.view.bounds.width - 2 * Padding,
+                height: self.textTitleLabel.intrinsicContentSize.height)
+        } else {
             self.colorSettingsView.frame = CGRect(
                 x: Padding,
                 y: self.colorButton.frame.origin.y + self.colorButton.frame.size.height + Padding,
@@ -229,7 +249,19 @@ class EditProfileImageController: UIViewController {
                 y: self.endColorLabel.frame.origin.y,
                 width: self.endColorButton.intrinsicContentSize.width,
                 height: self.endColorLabel.bounds.size.height)
+            
+            self.textTitleLabel.frame = CGRect(
+                x: Padding,
+                y: self.colorSettingsView.frame.origin.y + self.colorSettingsView.frame.size.height + Padding * 2.0,
+                width: self.view.bounds.width - 2 * Padding,
+                height: self.textTitleLabel.intrinsicContentSize.height)
         }
+        
+        self.textField.frame = CGRect(
+            x: Padding,
+            y: self.textTitleLabel.frame.origin.y + self.textTitleLabel.frame.height + Padding,
+            width: (self.view.frame.width - 2 * Padding) / 2.0,
+            height: self.textField.intrinsicContentSize.height)
     }
     
     // MARK: - GUI actions
@@ -316,6 +348,8 @@ class EditProfileImageController: UIViewController {
     }
     
     func refreshInterface() {
+        self.textField.text = self.profileImage.text
+        
         switch self.profileImage.background {
         case .color(let color):
             self.lastFirstColor = color
@@ -351,6 +385,8 @@ class EditProfileImageController: UIViewController {
             
             self.colorSettingsView.isHidden = true
         }
+        
+        self.view.setNeedsLayout()
     }
 }
 
@@ -492,5 +528,20 @@ extension EditProfileImageController: ColorButtonDelegate {
 // MARK: - Text Field delegate
 
 extension EditProfileImageController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+           let updatedText = text.replacingCharacters(in: textRange, with: string)
+            // Update profile image
+            var newProfileImage = self.profileImage
+            newProfileImage.text = updatedText
+            self.profileImage = newProfileImage
+        }
+
+        return false
+    }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return true
+    }
 }

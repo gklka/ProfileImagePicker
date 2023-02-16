@@ -78,6 +78,7 @@ class ColorButton: UIButton {
         self.colorPicker?.selectedColor = self.color
         self.colorPicker?.modalPresentationStyle = .popover
         self.colorPicker?.popoverPresentationController?.sourceView = self
+        self.colorPicker?.supportsAlpha = false
         self.colorPicker?.delegate = self
         
         if let delegate = self.delegate {
