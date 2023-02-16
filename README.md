@@ -44,7 +44,7 @@ The profile image has either an image, a color or a gradient background, and (a 
 
 You can add `ProfileImageView` to a view just by instantiating it:
 
-```
+```swift
 var profileImageView = ProfileImageView()
 profileImageView.profileImage = ProfileImage(background: .gradient(.blue, .purple), text: "GK")
 self.view.addSubview(profileImageView)
@@ -52,7 +52,7 @@ self.view.addSubview(profileImageView)
 
 The profile image can act as a display only view instance, or as a button. This can be set using the `editable` property:
 
-```
+```swift
 profileImageView.editable = true
 ```
 
@@ -60,13 +60,13 @@ If editing is enabled, tapping the profile image view opens a modal view with th
 
 You can also set the shape and corner radius of the profile image view:
 
-```
+```swift
 profileImageView.shape = .roundRect(5)
 ```
 
 The editor provides the changed image via it's delegate:
 
-```
+```swift
 extension ViewController: ProfileImageViewDelegate {
     func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage) {
         // TODO: upload image, store it permanently
