@@ -21,20 +21,24 @@ class ImageButton: UIButton {
     convenience init(systemImage: String, title: String) {
         var configuration = UIButton.Configuration.gray()
         configuration.imagePlacement = .top
-        configuration.imagePadding = 4.0
+        configuration.imagePadding = 8.0
         
         self.init(configuration: configuration)
         
-        self.setImage(UIImage(systemName: systemImage), for: .normal)
-        self.setTitle(title, for: .normal)
+
+        let imageConfig = UIImage.SymbolConfiguration(weight: .bold)
+        self.setImage(UIImage(systemName: systemImage, withConfiguration: imageConfig), for: .normal)
+
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)]
+        let attributedTitle = NSAttributedString(string: title, attributes: attributes)
+        
+        self.setAttributedTitle(attributedTitle, for: .normal)
         
         self.setup()
     }
     
     func setup() {
         // Tint images
-        self.tintColor = UIColor.label
-        
-        self.titleLabel?.font = UIFont.systemFont(ofSize: 30)
+        self.tintColor = .label
     }
 }

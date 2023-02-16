@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UniformTypeIdentifiers
 
 private let Padding: CGFloat = 16.0
 private let CloseButtonSize: CGFloat = 44.0
@@ -29,6 +30,9 @@ class EditProfileImageController: UIViewController {
     var photosButton: UIButton!
     var filesButton: UIButton!
     var colorButton: UIButton!
+    
+    var imagePickerController: UIImagePickerController?
+    var documentPicker: UIDocumentPickerViewController?
     
     // MARK: - Lifecycle
     
@@ -75,15 +79,19 @@ class EditProfileImageController: UIViewController {
         
         // Camera button
         self.cameraButton = ImageButton(systemImage: "camera", title: NSLocalizedString("Camera", comment: "Edit profile image - Camera"))
+        self.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
         
         // Photos button
         self.photosButton = ImageButton(systemImage: "photo", title: NSLocalizedString("Photos", comment: "Edit profile image - Photos"))
-        
+        self.photosButton.addTarget(self, action: #selector(photosButtonTapped), for: .touchUpInside)
+
         // Files button
         self.filesButton = ImageButton(systemImage: "folder", title: NSLocalizedString("Files", comment: "Edit profile image - Files"))
-        
+        self.filesButton.addTarget(self, action: #selector(filesButtonTapped), for: .touchUpInside)
+
         // Color button
         self.colorButton = ImageButton(systemImage: "paintpalette", title: NSLocalizedString("Color", comment: "Edit profile image - Color"))
+        self.colorButton.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -134,5 +142,74 @@ class EditProfileImageController: UIViewController {
     
     @objc func closeButtonTapped(_ sender: UIButton?) {
         self.dismiss(animated: true)
+    }
+    
+    @objc func cameraButtonTapped(_ sender: ImageButton) {
+        self.imagePickerController = UIImagePickerController()
+        if let imagePickerController = self.imagePickerController {
+            imagePickerController.sourceType = .camera
+            imagePickerController.allowsEditing = true
+            imagePickerController.delegate = self
+            self.present(imagePickerController, animated: true)
+        }
+    }
+    
+    @objc func photosButtonTapped(_ sender: ImageButton) {
+        self.imagePickerController = UIImagePickerController()
+        if let imagePickerController = self.imagePickerController {
+            imagePickerController.sourceType = .photoLibrary
+            imagePickerController.allowsEditing = true
+            imagePickerController.delegate = self
+            self.present(imagePickerController, animated: true)
+        }
+    }
+    
+    @objc func filesButtonTapped(_ sender: ImageButton) {
+        self.documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.image], asCopy: false)
+        if let documentPicker = self.documentPicker {
+            documentPicker.allowsMultipleSelection = false
+            documentPicker.delegate = self
+            self.present(documentPicker, animated: true)
+        }
+    }
+    
+    @objc func colorButtonTapped(_ sender: ImageButton) {
+        
+    }
+}
+
+// MARK: - Image Picker Controller delegate
+
+extension EditProfileImageController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        
+        guard let image = info[.editedImage] as? UIImage else {
+            print("No image found")
+            return
+        }
+        
+        print(image)
+        self.imagePickerController = nil
+    }
+}
+
+// MARK: - Navigation Controller delegate
+
+extension EditProfileImageController: UINavigationControllerDelegate {
+}
+
+// MARK: - Document Picker Controller delegate
+
+extension EditProfileImageController: UIDocumentPickerDelegate {    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        controller.dismiss(animated: true)
+        print("didpick2")
+        print(urls)
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true)
+        print("dismiss")
     }
 }
