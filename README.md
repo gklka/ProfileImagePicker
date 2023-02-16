@@ -36,6 +36,40 @@ I've considered and dropped the idea of providing the user the recent images, be
  
 The demo project demonstrates a `ProfileImageView` with a default text and gradient, which can be resized. The profile image view also supports rectangular, circular and round-rect shapes. The demo provides controls for testing this.
 
-Both `ProfileImageView` and `EditProfileImageController` uses the delegate pattern to provide the results to the caller.
+Both `ProfileImageView` and `EditProfileImageController` uses the delegate pattern to provide the results to the caller. It is the callers responsibility to store the profile image details and upload the underlying images if needed.
 
+The profile image has either an image, a color or a gradient background, and (a nullable) text on it.
 
+## Usage
+
+You can add `ProfileImageView` to a view just by instantiating it:
+
+```
+var profileImageView = ProfileImageView()
+profileImageView.profileImage = ProfileImage(background: .gradient(.blue, .purple), text: "GK")
+self.view.addSubview(profileImageView)
+```
+
+The profile image can act as a display only view instance, or as a button. This can be set using the `editable` property:
+
+```
+profileImageView.editable = true
+```
+
+If editing is enabled, tapping the profile image view opens a modal view with the profile image editor.
+
+You can also set the shape and corner radius of the profile image view:
+
+```
+profileImageView.shape = .roundRect(5)
+```
+
+The editor provides the changed image via it's delegate:
+
+```
+extension ViewController: ProfileImageViewDelegate {
+    func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage) {
+        // TODO: upload image, store it permanently
+    }
+}
+```
