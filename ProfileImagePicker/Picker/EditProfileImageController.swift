@@ -14,6 +14,8 @@ private let ProfileImageViewSize: CGFloat = 120.0
 private let ButtonPadding: CGFloat = 8.0
 private let ButtonHeight: CGFloat = 70.0 // TODO: Should depend on font size
 
+private let BackgroundImageMaximumSize: CGFloat = 500.0
+
 protocol EditProfileImageControllerDelegate {
     /// Will be called when the profile image view has changed the profile image. The caller's responsibility is to save/upload the given image or drop it and error to the user if not possible.
     /// - Parameters:
@@ -82,6 +84,9 @@ class EditProfileImageController: UIViewController {
         self.profileImageView = ProfileImageView(frame: .zero)
         self.profileImageView.profileImage = self.profileImage
         self.profileImageView.editable = false
+        
+        let dropInteraction = UIDropInteraction(delegate: self)
+        self.profileImageView.addInteraction(dropInteraction)
         
         // Background title
         self.backgroundTitleLabel = UILabel(frame: .zero)
@@ -195,9 +200,7 @@ class EditProfileImageController: UIViewController {
         if let documentPicker = self.documentPicker {
             documentPicker.allowsMultipleSelection = false
             documentPicker.delegate = self
-            documentPicker.modalPresentationStyle = .popover
-            documentPicker.popoverPresentationController?.sourceView = sender
-            documentPicker.popoverPresentationController?.delegate = self
+            documentPicker.modalPresentationStyle = .formSheet
             self.present(documentPicker, animated: true)
         }
     }
@@ -213,6 +216,20 @@ class EditProfileImageController: UIViewController {
         self.filesButton.isEnabled = enable
         self.colorButton.isEnabled = enable
     }
+    
+    func setNewBackgroundImage(_ image: UIImage) {
+        // Resize image to maximum allowed size
+        let targetSize = CGSize(width: BackgroundImageMaximumSize, height: BackgroundImageMaximumSize)
+        guard let scaledImage = image.resize(scaledToFill: targetSize) else {
+            print("Scaling failed")
+            return
+        }
+        
+        // Set new profile image
+        var newProfileImage = self.profileImage // New copy
+        newProfileImage.background = .image(scaledImage)
+        self.profileImage = newProfileImage
+    }
 }
 
 // MARK: - Image Picker Controller delegate
@@ -221,32 +238,29 @@ extension EditProfileImageController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         
+        defer {
+            self.enableButtons(true)
+        }
+        
         guard let image = info[.editedImage] as? UIImage else {
             print("No image found")
             return
         }
         
-        print("Selected image: \(image)")
-        
-        var newProfileImage = self.profileImage // New copy
-        newProfileImage.background = .image(image)
-        self.profileImage = newProfileImage
-        
-        self.imagePickerController = nil
-        self.enableButtons(true)
+        // Set new profile image
+        self.setNewBackgroundImage(image)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
         self.enableButtons(true)
     }
-    
 }
 
 // MARK: - Navigation Controller delegate
 
 extension EditProfileImageController: UINavigationControllerDelegate {
-    
+    // Just need to conform
 }
 
 // MARK: - Document Picker Controller delegate
@@ -254,14 +268,26 @@ extension EditProfileImageController: UINavigationControllerDelegate {
 extension EditProfileImageController: UIDocumentPickerDelegate {    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         controller.dismiss(animated: true)
-        print("didpick2")
-        print(urls)
-        self.enableButtons(true)
+        
+        defer {
+            self.enableButtons(true)
+            self.documentPicker = nil
+        }
+        
+        guard let url = urls.first else {
+            print("No URLs provided")
+            return
+        }
+        
+        if let image = UIImage(contentsOfFile: url.path(percentEncoded: false)) {
+            self.setNewBackgroundImage(image)
+        }
     }
     
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true)
         self.enableButtons(true)
+        self.documentPicker = nil
     }
 }
 
@@ -270,5 +296,29 @@ extension EditProfileImageController: UIDocumentPickerDelegate {
 extension EditProfileImageController: UIPopoverPresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         self.enableButtons(true)
+        self.imagePickerController = nil
+    }
+}
+
+// MARK: - Drop Interaction delegate
+
+extension EditProfileImageController: UIDropInteractionDelegate {
+    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        return session.canLoadObjects(ofClass: UIImage.self)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        return UIDropProposal(operation: .copy)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        session.loadObjects(ofClass: UIImage.self) { imageItems in
+            let images = imageItems as! [UIImage]
+            guard let image = images.first else {
+                return
+            }
+            
+            self.setNewBackgroundImage(image)
+        }
     }
 }
