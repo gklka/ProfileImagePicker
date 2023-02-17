@@ -120,4 +120,5 @@ You can change the displayed profile image or any properties of the `ProfileImag
 - We could use an own, more sophisticated code or a prebuilt library, like [TOCropViewController][https://github.com/TimOliver/TOCropViewController] to provide more convenient image cropping
 - I'd like to see support for clipboard. For this I'd add a "paste" menu item to the preview of the editor. This way the user could copy paste images.
 - The code can be turned into a library
+- Custom font settings can be added. The rendering part is already done.
 
