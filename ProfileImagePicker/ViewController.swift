@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    // Profile image view is added from Storyboard
     @IBOutlet weak var profileImageView: ProfileImageView!
     @IBOutlet weak var radiusSlider: UISlider!
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
@@ -15,6 +16,8 @@ class ViewController: UIViewController {
     
     // The current profile image
     var profileImage = ProfileImage(background: .gradient(.blue, .purple), text: "GK")
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +28,14 @@ class ViewController: UIViewController {
         self.profileImageView.profileImage = self.profileImage
     }
     
+    // MARK: - GUI actions
+
+    // Handle scale slider
+    @IBAction func sizeChanged(_ sender: UISlider) {
+        self.heightConstraint.constant = CGFloat(sender.value)
+    }
+
+    // Handle shape segmented control
     @IBAction func shapeChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
@@ -41,15 +52,14 @@ class ViewController: UIViewController {
         }
     }
     
+    // Handle radius slider
     @IBAction func radiusChanged(_ sender: UISlider) {
         self.radius = CGFloat(sender.value)
         self.profileImageView.shape = .roundRect(self.radius)
     }
-    
-    @IBAction func sizeChanged(_ sender: UISlider) {
-        self.heightConstraint.constant = CGFloat(sender.value)
-    }
 }
+
+// MARK: - Profile Image View delegate
 
 extension ViewController: ProfileImageViewDelegate {
     func profileImageView(_ profileImageView: ProfileImageView, wantsToChangeImageTo profileImage: ProfileImage) {

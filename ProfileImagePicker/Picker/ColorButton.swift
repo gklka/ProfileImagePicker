@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - Delegate
+
 protocol ColorButtonDelegate {
     /// Will be called when the user has changed the color
     /// - Parameters:
@@ -20,15 +22,25 @@ protocol ColorButtonDelegate {
     func colorButtonPresentationController(_ colorButton: ColorButton) -> UIViewController
 }
 
+
+// MARK: - Color Button
+
+/// Display a color as a button and let the user change it using system color picker
 class ColorButton: UIButton {
     private var colorPicker: UIColorPickerViewController?
     
+    
+    // MARK: - Properties
+    
+    /// The selected color
     var color: UIColor = .red {
         didSet {
             self.configuration?.baseBackgroundColor = color
         }
     }
+    /// You must provide a delegate to access the selected color
     var delegate: ColorButtonDelegate?
+    /// Strike though the button visually
     var striked: Bool = false {
         didSet {
             if striked {
@@ -40,6 +52,9 @@ class ColorButton: UIButton {
             self.setNeedsDisplay()
         }
     }
+    
+    
+    // MARK: - Lifecycle
     
     convenience init(color: UIColor, delegate: ColorButtonDelegate) {
         var configuration = UIButton.Configuration.borderedProminent()
@@ -58,6 +73,9 @@ class ColorButton: UIButton {
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 30.0, height: 30.0)
     }
+    
+    
+    // MARK: - Drawing
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -73,6 +91,9 @@ class ColorButton: UIButton {
         }
     }
     
+    
+    // MARK: - GUI actions
+    
     @objc func tapped(_ sender: ColorButton) {
         self.colorPicker = UIColorPickerViewController()
         self.colorPicker?.selectedColor = self.color
@@ -83,10 +104,15 @@ class ColorButton: UIButton {
         
         if let delegate = self.delegate {
             let controller = delegate.colorButtonPresentationController(self)
+            
+            // Present system color picker
             controller.present(self.colorPicker!, animated: true)
         }
     }
 }
+
+
+// MARK: - Color Picker View Controller delegate
 
 extension ColorButton: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {

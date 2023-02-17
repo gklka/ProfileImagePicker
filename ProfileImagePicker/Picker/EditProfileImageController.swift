@@ -8,6 +8,7 @@
 import UIKit
 import UniformTypeIdentifiers
 
+// Constants
 private let Padding: CGFloat = 20.0
 private let CloseButtonSize: CGFloat = 44.0
 private let ProfileImageViewSize: CGFloat = 120.0
@@ -15,6 +16,9 @@ private let ButtonPadding: CGFloat = 8.0
 private let ButtonHeight: CGFloat = 70.0 // TODO: Should depend on font size
 
 private let BackgroundImageMaximumSize: CGFloat = 500.0
+
+
+// MARK: - Delegate
 
 protocol EditProfileImageControllerDelegate {
     /// Will be called when the profile image view has changed the profile image. The caller's responsibility is to save/upload the given image or drop it and error to the user if not possible.
@@ -24,6 +28,10 @@ protocol EditProfileImageControllerDelegate {
     func editProfileImageViewController(_ controller: EditProfileImageController, wantsToChangeImageTo profileImage: ProfileImage)
 }
 
+
+// MARK: - Edit Profile Image Controller
+
+/// Edit a profile image
 class EditProfileImageController: UIViewController {
     // MARK: - Properties
     
@@ -63,6 +71,7 @@ class EditProfileImageController: UIViewController {
     var lastFirstColor: UIColor = .blue
     var lastSecondColor: UIColor = .purple
     var lastImage: UIImage?
+    
     
     // MARK: - Lifecycle
     
@@ -105,6 +114,7 @@ class EditProfileImageController: UIViewController {
         self.refreshInterface()
     }
     
+    /// Configure views
     func setup() {
         // Close button
         self.closeButton = UIButton(frame: .zero)
@@ -149,11 +159,15 @@ class EditProfileImageController: UIViewController {
         self.startColorLabel = UILabel(frame: .zero)
         self.startColorLabel.text = NSLocalizedString("Start Color", comment: "Edit profile image - label")
         self.startColorButton = ColorButton(color: self.lastFirstColor, delegate: self)
+        self.startColorButton.isAccessibilityElement = true
+        self.startColorButton.accessibilityLabel = self.startColorLabel.text
         
         // End color
         self.endColorLabel = UILabel(frame: .zero)
         self.endColorLabel.text = NSLocalizedString("End Color", comment: "Edit profile image - label")
         self.endColorButton = ColorButton(color: self.lastSecondColor, delegate: self)
+        self.endColorButton.isAccessibilityElement = true
+        self.endColorButton.accessibilityLabel = self.endColorLabel.text
         
         // Text title
         self.textTitleLabel = UILabel(frame: .zero)
@@ -168,6 +182,7 @@ class EditProfileImageController: UIViewController {
         self.textField.text = self.profileImage.text
         self.textField.delegate = self
     }
+    
     
     // MARK: - Layouting
     
@@ -265,6 +280,7 @@ class EditProfileImageController: UIViewController {
             height: self.textField.intrinsicContentSize.height)
     }
     
+    
     // MARK: - GUI actions
     
     @objc func closeButtonTapped(_ sender: UIButton?) {
@@ -285,6 +301,8 @@ class EditProfileImageController: UIViewController {
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.popoverPresentationController?.sourceView = sender
             imagePickerController.popoverPresentationController?.delegate = self
+            
+            // Open camera
             self.present(imagePickerController, animated: true)
         }
     }
@@ -300,6 +318,8 @@ class EditProfileImageController: UIViewController {
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.popoverPresentationController?.sourceView = sender
             imagePickerController.popoverPresentationController?.delegate = self
+            
+            // Open Photo Library
             self.present(imagePickerController, animated: true)
         }
     }
@@ -311,11 +331,14 @@ class EditProfileImageController: UIViewController {
             documentPicker.allowsMultipleSelection = false
             documentPicker.delegate = self
             documentPicker.modalPresentationStyle = .formSheet
+            
+            // Open file requester
             self.present(documentPicker, animated: true)
         }
     }
     
     @objc func colorButtonTapped(_ sender: ImageButton) {
+        // Change profile image background, which causes the UI to refresh
         if case ProfileImage.BackgroundType.image(_) = self.profileImage.background {
             self.profileImage.background = .gradient(self.lastFirstColor, self.lastSecondColor)
         } else {
@@ -325,8 +348,11 @@ class EditProfileImageController: UIViewController {
         }
     }
     
+    
     // MARK: - Helper functions
     
+    /// Prevent tapping buttons twice, and also indication to the user that something is going on
+    /// - Parameter enable: Enable or disable the buttons
     func enableButtons(_ enable: Bool) {
         self.cameraButton.isEnabled = enable
         self.photosButton.isEnabled = enable
@@ -334,6 +360,8 @@ class EditProfileImageController: UIViewController {
         self.colorButton.isEnabled = enable
     }
     
+    /// Resize and set the given `image` as new profile image
+    /// - Parameter image: The image will be resized (and cropped) to a predefined square size.
     func setNewBackgroundImage(_ image: UIImage) {
         // Resize image to maximum allowed size
         let targetSize = CGSize(width: BackgroundImageMaximumSize, height: BackgroundImageMaximumSize)
@@ -348,6 +376,7 @@ class EditProfileImageController: UIViewController {
         self.profileImage = newProfileImage
     }
     
+    /// Display the interface to reflect the current `profileImage`. Remember the last settings
     func refreshInterface() {
         self.textField.text = self.profileImage.text
         
@@ -387,14 +416,17 @@ class EditProfileImageController: UIViewController {
             self.colorSettingsView.isHidden = true
         }
         
+        // `isHidden` does not trigger this always
         self.view.setNeedsLayout()
     }
 }
+
 
 // MARK: - Image Picker Controller delegate
 
 extension EditProfileImageController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // Dismiss the picker
         picker.dismiss(animated: true)
         
         defer {
@@ -411,10 +443,12 @@ extension EditProfileImageController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // Dismiss the picker
         picker.dismiss(animated: true)
         self.enableButtons(true)
     }
 }
+
 
 // MARK: - Navigation Controller delegate
 
@@ -422,10 +456,12 @@ extension EditProfileImageController: UINavigationControllerDelegate {
     // Just need to conform
 }
 
+
 // MARK: - Document Picker Controller delegate
 
 extension EditProfileImageController: UIDocumentPickerDelegate {    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        // Dismiss the picker
         controller.dismiss(animated: true)
         
         defer {
@@ -438,6 +474,7 @@ extension EditProfileImageController: UIDocumentPickerDelegate {
             return
         }
         
+        // Load image
         if let image = UIImage(contentsOfFile: url.path(percentEncoded: false)) {
             self.setNewBackgroundImage(image)
         }
@@ -450,6 +487,7 @@ extension EditProfileImageController: UIDocumentPickerDelegate {
     }
 }
 
+
 // MARK: - Popover Presentation Controller delegate
 
 extension EditProfileImageController: UIPopoverPresentationControllerDelegate {
@@ -459,10 +497,12 @@ extension EditProfileImageController: UIPopoverPresentationControllerDelegate {
     }
 }
 
+
 // MARK: - Drop Interaction delegate
 
 extension EditProfileImageController: UIDropInteractionDelegate {
     func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        // Receive only images
         return session.canLoadObjects(ofClass: UIImage.self)
     }
     
@@ -481,6 +521,7 @@ extension EditProfileImageController: UIDropInteractionDelegate {
         }
     }
 }
+
 
 // MARK: - Color Button delegate
 
@@ -527,20 +568,23 @@ extension EditProfileImageController: ColorButtonDelegate {
     }
 }
 
+
 // MARK: - Text Field delegate
 
 extension EditProfileImageController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let text = textField.text,
            let textRange = Range(range, in: text) {
-           let updatedText = text.replacingCharacters(in: textRange, with: string)
+            // Change text
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            
             // Update profile image
             var newProfileImage = self.profileImage
             newProfileImage.text = updatedText
             self.profileImage = newProfileImage
         }
 
-        return false
+        return false // We need to update only once
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

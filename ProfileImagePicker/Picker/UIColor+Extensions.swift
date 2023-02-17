@@ -7,8 +7,8 @@
 
 import UIKit
 
-// Returns true if color is light, false if it is dark
 extension UIColor {
+    /// Returns true if color is light, false if it is dark
     func isLight() -> Bool {
         // Algorithm from: http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
         var r: CGFloat = 0.0
@@ -27,6 +27,7 @@ extension UIColor {
         }
     }
     
+    /// Check if alpha value is zero
     func isTransparent() -> Bool {
         var r: CGFloat = 0.0
         var g: CGFloat = 0.0

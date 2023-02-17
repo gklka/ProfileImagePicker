@@ -123,4 +123,6 @@ You can change the displayed profile image or any properties of the `ProfileImag
 - I'd like to see support for clipboard. For this I'd add a "paste" menu item to the preview of the editor. This way the user could copy paste images.
 - The code can be turned into a library
 - Custom font settings can be added. The rendering part is already done.
-
+- We could also add a fifth button to open Craft's already built Unsplash image search
+- Instead of solid elevated background, the edit panel could use a transparent material
+- The `ProfileImage` should conform `Codable`, for easier serialization and saving

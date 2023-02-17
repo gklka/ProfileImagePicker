@@ -25,11 +25,12 @@ protocol ProfileImageViewDelegate {
     func profileImageViewPresentationController(_ profileImageView: ProfileImageView) -> UIViewController
 }
 
+/// Displays a `ProfileImage`
 class ProfileImageView: UIView {
     enum Shape {
         case square
         case circle
-        case roundRect(CGFloat?)
+        case roundRect(CGFloat?) // Associated value: radius
     }
     
 
@@ -82,8 +83,10 @@ class ProfileImageView: UIView {
         switch self.profileImage.background {
         case .color(let color):
             self.backgroundColor = color
+            
         case .gradient(let firstColor, let secondColor):
             self.insertGradient(firstColor: firstColor, secondColor: secondColor)
+            
         case .image(let image):
             self.backgroundImageView = UIImageView(frame: .zero)
             self.backgroundImageView?.image = image
@@ -117,7 +120,10 @@ class ProfileImageView: UIView {
         
         // Set accessibility
         self.isAccessibilityElement = true
-        self.accessibilityLabel = "Profile image"
+        self.accessibilityLabel = NSLocalizedString("Profile image", comment: "Profile image view - accessibility")
+        if self.editable {
+            self.accessibilityHint = NSLocalizedString("Tap to edit", comment: "Profile image view - accessibility")
+        }
     }
     
     /// Reset all properties to initial state, remove all added subviews
@@ -227,6 +233,7 @@ extension ProfileImageView: EditProfileImageControllerDelegate {
     func editProfileImageViewController(_ controller: EditProfileImageController, wantsToChangeImageTo profileImage: ProfileImage) {
         self.profileImage = profileImage
 
+        // Provide the new profile image to the delegate
         if let delegate = self.delegate {
             delegate.profileImageView(self, wantsToChangeImageTo: profileImage)
         }
