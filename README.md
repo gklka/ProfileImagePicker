@@ -116,6 +116,7 @@ You can change the displayed profile image or any properties of the `ProfileImag
 - I did not add animations
 - The color of the overlay text on the profile image is either dark or light depending on the background below it. I implemented this only for `solid` colors. `gradient`s use the top color for determining, and `image`s always use light color. We should add code to handle these cases correctly.
 - On small screens the text field can be covered by the keyboard.
+- Requires iOS 16. Can be back deployed on older OSs, but requires careful testing and a small amount of work
 
 ## Improvement ideas
 
