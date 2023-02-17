@@ -86,3 +86,38 @@ extension ViewController: ProfileImageViewDelegate {
     }
 }
 ```
+
+You can change the displayed profile image or any properties of the `ProfileImageView` at any time, the view refreshes accordingly.
+
+## Editor Features
+
+- The image can be set from the camera, from the user's Photo Library, Files app/File requester (depending on platform), or by dragging it over the profile image preview on the editor. The code uses iOS's built-in `UIImagePickerController` for camera and photos, and `UIDocumentPickerViewController` for files. Be aware of the project settings, entitlements might needed.
+- If no image is provided, a color will be used. The editor displays pickable start and end colors. The code displays iOS's `UIColorPickerViewController` for selecting a color.
+- If the two selected colors are the same, or the second one is transparent, only a solid color will be rendered and stored.
+- The text on the profile image can be changed, or left empty. It supports any text length, but only the first few characters will be shown. Text shrinks if the entered text is longer.
+- Changes can be seen instantly on the profile image preview
+- When there was an image added previously, and the user selects "Color", it is possible for the user to change his mind and press the button again to revert to the image.
+- Last set colors are also remembered.
+- I am using iOS's "editing" feature after the camera and photos pickers, so the user can zoom and move the selected image to square aspect ratio
+- The set image is resized to 500x500 px
+- Color settings are hidden when an image is set
+- Supports dark/light appearance
+- Supports both macOS (Catalyst) and iOS presentation
+- Adapts to the presented controller size
+- The editor provides a standard "X" button to close, this causes the currently set profile image to "save" (which is provided by the caller). You can also drag the modal sheet to dismiss it without changing the image.
+
+## Known limitations
+
+- There is no check for camera availability. We should always check if any camera is available.
+- Opening Photo Library picker with large libraries takes time. We should display a progress indicator for this using the app's design language
+- Design language does not exactly match Craft app's. The general style and way of thinking is as close as possible, but I did not want to recreate every detail, like button borders on macOS, etc. The final implementation should use the same buttons already programmed in the code.
+- I did not add animations
+- The color of the overlay text on the profile image is either dark or light depending on the background below it. I implemented this only for `solid` colors. `gradient`s use the top color for determining, and `image`s always use light color. We should add code to handle these cases correctly.
+- On small screens the text field can be covered by the keyboard.
+
+## Improvement ideas
+
+- We could use an own, more sophisticated code or a prebuilt library, like [TOCropViewController][https://github.com/TimOliver/TOCropViewController] to provide more convenient image cropping
+- I'd like to see support for clipboard. For this I'd add a "paste" menu item to the preview of the editor. This way the user could copy paste images.
+- The code can be turned into a library
+
